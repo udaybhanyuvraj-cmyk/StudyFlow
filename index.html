@@ -1,0 +1,534 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>StudyFlow - Learning Platform</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:#f3f6fc;
+ color:#18243a;
+}
+header{
+ background:#142b50;
+ color:white;
+ padding:20px;
+}
+header h1{margin:0}
+header p{color:#cbd8ed}
+nav{
+ display:flex;
+ gap:8px;
+ overflow-x:auto;
+ padding:12px;
+ background:white;
+ position:sticky;
+ top:0;
+ z-index:5;
+}
+nav button{
+ border:0;
+ background:#eaf0fa;
+ padding:12px 16px;
+ border-radius:9px;
+ white-space:nowrap;
+}
+nav button.active{
+ background:#18365f;
+ color:white;
+}
+main{padding:16px;max-width:950px;margin:auto}
+.page{display:none}
+.page.active{display:block}
+.card{
+ background:white;
+ padding:17px;
+ border-radius:15px;
+ margin-bottom:14px;
+ box-shadow:0 3px 15px #1d355710;
+}
+.grid{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:12px;
+}
+input,select,textarea{
+ width:100%;
+ padding:13px;
+ margin:7px 0;
+ border:1px solid #d8e0ed;
+ border-radius:9px;
+ font-size:15px;
+ background:white;
+ color:#18243a;
+}
+button.primary{
+ background:#2058a0;
+ color:white;
+ border:0;
+ padding:12px 17px;
+ border-radius:9px;
+ cursor:pointer;
+}
+button.delete{
+ background:#ffe7e7;
+ color:#b32626;
+ border:0;
+ padding:8px;
+ border-radius:7px;
+}
+.stat{
+ background:#eaf2ff;
+ padding:17px;
+ border-radius:12px;
+}
+.stat strong{font-size:24px;color:#2058a0}
+.small{color:#718098;font-size:13px}
+.task{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:10px;
+ padding:12px 0;
+ border-bottom:1px solid #edf0f5;
+}
+.done{text-decoration:line-through;color:#8b98a9}
+.chat{
+ background:#edf3fc;
+ padding:12px;
+ border-radius:12px;
+ margin:10px 0;
+ white-space:pre-wrap;
+}
+footer{text-align:center;padding:25px;color:#718098}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>📚 StudyFlow</h1>
+<p>Learn Smart. Grow Every Day.</p>
+</header>
+
+<nav>
+<button class="active" onclick="showPage('home',this)">Home</button>
+<button onclick="showPage('courses',this)">Courses</button>
+<button onclick="showPage('tasks',this)">Tasks</button>
+<button onclick="showPage('tutor',this)">AI Tutor</button>
+<button onclick="showPage('quiz',this)">Quiz</button>
+<button onclick="showPage('notes',this)">Notes</button>
+<button onclick="showPage('profile',this)">Profile</button>
+</nav>
+
+<main>
+
+<!-- HOME -->
+<section id="home" class="page active">
+
+<div class="card">
+<h2>Welcome to StudyFlow 👋</h2>
+<p>Your personal learning dashboard.</p>
+</div>
+
+<div class="grid">
+<div class="stat">
+<strong id="totalTasks">0</strong>
+<p>Total Tasks</p>
+</div>
+<div class="stat">
+<strong id="completedTasks">0</strong>
+<p>Completed</p>
+</div>
+<div class="stat">
+<strong id="courseCount">0</strong>
+<p>Subjects</p>
+</div>
+<div class="stat">
+<strong id="progress">0%</strong>
+<p>Task Progress</p>
+</div>
+</div>
+
+<div class="card">
+<h3>📅 Today's Study Plan</h3>
+<p id="today"></p>
+<p>1. Complete your daily tasks.</p>
+<p>2. Revise yesterday's topics.</p>
+<p>3. Take a short quiz.</p>
+</div>
+
+<div class="card">
+<h3>Quick Access</h3>
+<button class="primary" onclick="showPage('tasks')">My Tasks</button>
+<button class="primary" onclick="showPage('tutor')">Ask Tutor</button>
+</div>
+</section>
+
+<!-- COURSES -->
+<section id="courses" class="page">
+<div class="card">
+<h2>📚 My Courses</h2>
+<label>Select Education Level</label>
+<select id="level">
+<option>Class 1</option><option>Class 2</option>
+<option>Class 3</option><option>Class 4</option>
+<option>Class 5</option><option>Class 6</option>
+<option>Class 7</option><option>Class 8</option>
+<option>Class 9</option><option>Class 10</option>
+<option>Class 11</option><option>Class 12</option>
+<option>UPSC / IAS</option>
+<option>State PCS</option>
+<option>Other Competitive Exams</option>
+</select>
+
+<input id="subject" placeholder="Enter subject name">
+<input id="topic" placeholder="Enter chapter or topic">
+<button class="primary" onclick="addCourse()">Add Subject</button>
+</div>
+<div class="card">
+<h3>My Subjects</h3>
+<div id="courseList"></div>
+</div>
+</section>
+
+<!-- TASKS -->
+<section id="tasks" class="page">
+<div class="card">
+<h2>✅ Daily Task Manager</h2>
+<input id="taskName" placeholder="Enter your study task">
+<input id="taskDate" type="date">
+<select id="priority">
+<option>Normal</option>
+<option>Important</option>
+<option>Urgent</option>
+</select>
+<button class="primary" onclick="addTask()">Add Task</button>
+</div>
+<div class="card">
+<h3>My Tasks</h3>
+<div id="taskList"></div>
+</div>
+</section>
+
+<!-- TUTOR -->
+<section id="tutor" class="page">
+<div class="card">
+<h2>🤖 StudyFlow Tutor</h2>
+<p class="small">Demo tutor: actual AI connection will be added later.</p>
+<select id="tutorLevel">
+<option>Class 1-5</option>
+<option>Class 6-8</option>
+<option>Class 9-10</option>
+<option>Class 11-12</option>
+<option>IAS / UPSC</option>
+<option>PCS</option>
+</select>
+<select id="language">
+<option>English</option>
+<option>Hindi</option>
+<option>Hinglish</option>
+</select>
+<div id="chatBox" class="chat">
+Hello! Welcome to StudyFlow.
+Ask me a study question!
+</div>
+<textarea id="question" placeholder="Ask your question..." rows="3"></textarea>
+<button class="primary" onclick="askTutor()">Send Question</button>
+</div>
+</section>
+
+<!-- QUIZ -->
+<section id="quiz" class="page">
+<div class="card">
+<h2>📝 Practice Quiz</h2>
+<p>Choose the correct answer.</p>
+<h3 id="quizQuestion"></h3>
+<div id="quizOptions"></div>
+<p id="quizResult"></p>
+<button class="primary" onclick="nextQuiz()">Next Question</button>
+</div>
+</section>
+
+<!-- NOTES -->
+<section id="notes" class="page">
+<div class="card">
+<h2>📖 My Notes</h2>
+<input id="noteTitle" placeholder="Note title">
+<textarea id="noteText" rows="5" placeholder="Write your notes here..."></textarea>
+<button class="primary" onclick="addNote()">Save Note</button>
+</div>
+<div class="card">
+<h3>Saved Notes</h3>
+<div id="noteList"></div>
+</div>
+</section>
+
+<!-- PROFILE -->
+<section id="profile" class="page">
+<div class="card">
+<h2>👤 Student Profile</h2>
+<input id="studentName" placeholder="Your name">
+<select id="studentClass">
+<option>Class 1</option><option>Class 2</option>
+<option>Class 3</option><option>Class 4</option>
+<option>Class 5</option><option>Class 6</option>
+<option>Class 7</option><option>Class 8</option>
+<option>Class 9</option><option>Class 10</option>
+<option>Class 11</option><option>Class 12</option>
+<option>IAS Aspirant</option><option>PCS Aspirant</option>
+</select>
+<button class="primary" onclick="saveProfile()">Save Profile</button>
+<p id="profileMessage"></p>
+</div>
+</section>
+
+</main>
+
+<footer>
+<p>StudyFlow © 2026</p>
+<p>Learn • Practice • Improve</p>
+</footer>
+
+<script>
+const getData = (key, fallback=[]) => {
+ try {
+  return JSON.parse(localStorage.getItem(key)) ?? fallback;
+ } catch(e) { return fallback; }
+};
+
+const saveData = (key,value) =>
+ localStorage.setItem(key,JSON.stringify(value));
+
+let tasks=getData("sf_tasks");
+let courses=getData("sf_courses");
+let notes=getData("sf_notes");
+
+function showPage(id,btn){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+ if(btn) btn.classList.add("active");
+ refresh();
+}
+
+function refresh(){
+ document.getElementById("totalTasks").textContent=tasks.length;
+ document.getElementById("completedTasks").textContent=
+ tasks.filter(t=>t.done).length;
+ document.getElementById("courseCount").textContent=courses.length;
+ let percentage=tasks.length?
+ Math.round(tasks.filter(t=>t.done).length/tasks.length*100):0;
+ document.getElementById("progress").textContent=percentage+"%";
+ renderTasks();
+ renderCourses();
+ renderNotes();
+}
+
+function addTask(){
+ let name=document.getElementById("taskName").value.trim();
+ let date=document.getElementById("taskDate").value;
+ let priority=document.getElementById("priority").value;
+ if(!name)return alert("Enter a task first!");
+ tasks.push({id:Date.now(),name,date,priority,done:false});
+ saveData("sf_tasks",tasks);
+ document.getElementById("taskName").value="";
+ refresh();
+}
+
+function renderTasks(){
+ let box=document.getElementById("taskList");
+ box.innerHTML="";
+ if(!tasks.length)box.textContent="No tasks yet.";
+ tasks.forEach(t=>{
+ let div=document.createElement("div");
+ div.className="task";
+ let left=document.createElement("div");
+ let check=document.createElement("input");
+ check.type="checkbox";
+ check.checked=t.done;
+ check.style.width="auto";
+ check.addEventListener("change",()=>{
+ t.done=check.checked;
+ saveData("sf_tasks",tasks);
+ refresh();
+ });
+ let label=document.createElement("span");
+ label.textContent=" "+t.name+" ("+t.priority+")";
+ if(t.done)label.className="done";
+ left.append(check,label);
+ let del=document.createElement("button");
+ del.className="delete";
+ del.textContent="Delete";
+ del.onclick=()=>{
+ tasks=tasks.filter(x=>x.id!==t.id);
+ saveData("sf_tasks",tasks);
+ refresh();
+ };
+ div.append(left,del);
+ box.append(div);
+ });
+}
+
+function addCourse(){
+ let level=document.getElementById("level").value;
+ let subject=document.getElementById("subject").value.trim();
+ let topic=document.getElementById("topic").value.trim();
+ if(!subject)return alert("Enter subject name!");
+ courses.push({level,subject,topic});
+ saveData("sf_courses",courses);
+ document.getElementById("subject").value="";
+ document.getElementById("topic").value="";
+ refresh();
+}
+
+function renderCourses(){
+ let box=document.getElementById("courseList");
+ box.innerHTML="";
+ courses.forEach((c,i)=>{
+ let p=document.createElement("p");
+ p.textContent=c.level+" | "+c.subject+" | "+c.topic;
+ let d=document.createElement("button");
+ d.className="delete";
+ d.textContent="Remove";
+ d.onclick=()=>{
+ courses.splice(i,1);
+ saveData("sf_courses",courses);
+ refresh();
+ };
+ p.append(" ",d);
+ box.append(p);
+ });
+}
+
+function addNote(){
+ let title=document.getElementById("noteTitle").value.trim();
+ let content=document.getElementById("noteText").value.trim();
+ if(!title||!content)return alert("Fill both fields!");
+ notes.push({title,content});
+ saveData("sf_notes",notes);
+ document.getElementById("noteTitle").value="";
+ document.getElementById("noteText").value="";
+ refresh();
+}
+
+function renderNotes(){
+ let box=document.getElementById("noteList");
+ box.innerHTML="";
+ notes.forEach((n,i)=>{
+ let div=document.createElement("div");
+ div.className="card";
+ let h=document.createElement("h3");
+ h.textContent=n.title;
+ let p=document.createElement("p");
+ p.textContent=n.content;
+ let d=document.createElement("button");
+ d.className="delete";
+ d.textContent="Delete";
+ d.onclick=()=>{
+ notes.splice(i,1);
+ saveData("sf_notes",notes);
+ refresh();
+ };
+ div.append(h,p,d);
+ box.append(div);
+ });
+}
+
+function askTutor(){
+ let q=document.getElementById("question").value.trim();
+ if(!q)return;
+ let level=document.getElementById("tutorLevel").value;
+ let lang=document.getElementById("language").value;
+ let box=document.getElementById("chatBox");
+ let response="This is the StudyFlow demo tutor. Your question is: "+q+
+ "\n\nSelected level: "+level+
+ "\n\nFor a proper AI-generated explanation, we will connect a real AI service in the next version. I will then be able to explain topics, create examples and help you practise.";
+ if(lang==="Hindi"){
+ response="StudyFlow Demo Tutor\n\nआपका सवाल: "+q+
+ "\n\nआपका चुना हुआ स्तर: "+level+
+ "\n\nअभी यह Demo है। अगले वर्जन में वास्तविक AI जोड़ा जाएगा।";
+ }
+ box.textContent=response;
+ document.getElementById("question").value="";
+}
+
+const quiz=[
+ {q:"Which planet is known as the Red Planet?",a:["Earth","Mars","Venus","Jupiter"],correct:1},
+ {q:"What is the capital of India?",a:["Mumbai","Lucknow","New Delhi","Jaipur"],correct:2},
+ {q:"What is 12 × 8?",a:["84","96","108","88"],correct:1},
+ {q:"Which gas do plants absorb?",a:["Oxygen","Nitrogen","Carbon dioxide","Hydrogen"],correct:2}
+];
+
+let qi=0;
+let answered=false;
+let score=0;
+
+function nextQuiz(){
+ if(answered)qi++;
+ if(qi>=quiz.length){
+ document.getElementById("quizQuestion").textContent=
+ "Quiz finished! Your score: "+score+"/"+quiz.length;
+ document.getElementById("quizOptions").innerHTML="";
+ document.getElementById("quizResult").textContent="Well done!";
+ qi=0;score=0;answered=false;
+ return;
+ }
+ answered=false;
+ document.getElementById("quizResult").textContent="";
+ let q=quiz[qi];
+ document.getElementById("quizQuestion").textContent=q.q;
+ let box=document.getElementById("quizOptions");
+ box.innerHTML="";
+ q.a.forEach((a,i)=>{
+ let b=document.createElement("button");
+ b.className="primary";
+ b.style.display="block";
+ b.style.margin="8px 0";
+ b.textContent=a;
+ b.onclick=()=>{
+ if(answered)return;
+ answered=true;
+ if(i===q.correct){
+ score++;
+ document.getElementById("quizResult").textContent="Correct answer!";
+ }else{
+ document.getElementById("quizResult").textContent=
+ "Incorrect. Correct answer: "+q.a[q.correct];
+ }
+ };
+ box.append(b);
+ });
+}
+
+function saveProfile(){
+ let name=document.getElementById("studentName").value;
+ let cls=document.getElementById("studentClass").value;
+ saveData("sf_profile",{name,cls});
+ document.getElementById("profileMessage").textContent=
+ "Profile saved successfully!";
+}
+
+function loadProfile(){
+ let p=getData("sf_profile",null);
+ if(p&&p.name){
+ document.getElementById("studentName").value=p.name;
+ document.getElementById("studentClass").value=p.cls;
+ }
+}
+
+document.getElementById("today").textContent=
+ new Date().toLocaleDateString("en-IN",{dateStyle:"full"});
+
+loadProfile();
+nextQuiz();
+refresh();
+</script>
+
+</body>
+</html>
